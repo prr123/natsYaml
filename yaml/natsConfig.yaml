@@ -1,0 +1,63 @@
+---
+Server:
+  addr: "0.0.0.0"                # set server address (default: 0.0.0.0)
+  net: <host>                    # Bind to host address 
+  port: 4222                     # port for clients (default: 4222)
+  name:
+  server_name: auto              # Server name (default: auto)
+  pid: pidfile.txt               # File to store PID
+  http_port: 80                  # Use port for http monitoring
+  https_port: 443                # Use port for https monitoring
+  config: config                 # Configuration file
+  test: true                     # Test configuration and exit
+  signal: ""                     # <signal>[=<pid>]    Send signal to nats-server process (ldm, stop, quit, term, reopen, reload)
+                                 #    <pid> can be either a PID (e.g. 1) or the path to a PID file (e.g. /var/run/nats-server.pid)
+  client_advertise: ""           # Client URL to advertise to other servers
+  ports_file_dir:                # Creates a ports file in the specified directory (<executable_name>_<pid>.ports).
+
+Logging:
+  log: <file>                     # File to redirect log output
+  logtime: true                   # Timestamp log entries (default: true)
+  logtime_utc: false              # Timestamps in UTC instead of local timezone (default: false)
+  syslog: false                   # Log to syslog or windows event log
+  remote_syslog: <addr>           # Syslog server addr (udp://localhost:514)
+  debug: false                    # Enable debugging output
+  trace: false                    # Trace the raw protocol
+#    -VV                              Verbose trace (traces system account as well)
+#    -DV                              Debug and trace
+#    -DVV                             Debug and verbose trace (traces system account as well)
+  log_size_limit: -1              # Logfile size limit (default: auto)
+  max_traced_msg_len: -1          # Maximum printable length for traced messages (default: unlimited)
+
+JetStream:
+  jetstream: true                  # Enable JetStream functionality
+  store_dir: <dir>                 # Set the storage directory
+
+Authorization:
+  user: <user>                      # User required for connections
+  pass: <password>                  # Password required for connections
+  auth: <token>                     # Authorization token required for connections
+
+TLS:
+  tls: false                       # Enable TLS, do not verify clients (default: false)
+  tlscert: <file>                  # Server certificate file
+  tlskey: <file>                   # Private key for server certificate
+  tlsverify: true                  # Enable TLS, verify client certificates
+  tlscacert: <file>                # Client certificate CA for verification
+
+Cluster:
+  routes: <rurl-1, rurl-2>         # Routes to solicit and connect
+  cluster: <cluster-url>           # Cluster URL for solicited routes
+  cluster_name: <string>           # Cluster Name, if not set one will be dynamically generated
+  no_advertise: false              # Do not advertise known cluster information to clients
+  cluster_advertise: <string>      # Cluster URL to advertise to other servers
+  connect_retries: -1              # For implicit routes, number of connect retries
+  cluster_listen: <url>            # Cluster url from which members can solicit routes
+
+Profiling:
+   profile: <port>                 # Profiling HTTP port
+
+#Common:
+#    -h, --help                       Show this message
+#    -v, --version                    Show version
+#        --help_tls                   TLS help
