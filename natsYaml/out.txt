@@ -1,0 +1,192 @@
+********** Nats Config *************
+  Server:
+        Addr:              0.0.0.0
+        Net:               <host>
+        Port:              4222
+        Name:              
+        Server Name:       auto
+        Pid:               pidfile.txt
+        Http_port:         80
+        Https_port:        443
+        Config:            config
+        Test:              true
+        Signal:            
+        Client_Adv:        
+        Ports_Dir:         
+
+  Logging:
+        Log File:          <file>
+        Log Time Stamp:    true
+        UTC Log Time:      false
+        Syslog:            false
+        Remote Adr:        <addr>
+        Debug:             false
+        Trace:             false
+        Max Log Size:      -1
+        Max Trace Msg Len: -1
+
+  JetStream:
+        JetStream:         true
+        Store Dir:         <dir>
+
+  Authorisation:
+        User:              
+        Passwd:            
+        Token:             
+
+  TLS:
+        TLS:               false
+        TLS Cert:          <file>
+        TLS Key:           <file>
+        TLS Verify:        true
+        TLS Ca Cert:       <file>
+
+  Cluster:
+        Routes:            <rurl-1, rurl-2>
+        Name:              <string>
+        NoAdvert:          false
+        ClAdvert:          <string>
+        ClRetries:         -1
+        ClListen:          <url>
+
+  Profiling:
+        Profile:           0
+******** End Nats Config ***********
+********** Nats Server Options *************
+ConfigFile                    : 
+ServerName                    : auto
+Host                          : 
+Port                          : 0
+DontListen                    : false
+ClientAdvertise               : 
+Trace                         : false
+Debug                         : false
+TraceVerbose                  : false
+TraceHeaders                  : false
+NoLog                         : false
+NoSigs                        : false
+NoSublistCache                : false
+NoHeaderSupport               : false
+DisableShortFirstPing         : false
+Logtime                       : false
+LogtimeUTC                    : false
+MaxConn                       : 0
+MaxSubs                       : 0
+MaxSubTokens                  : 0
+Nkeys                         : []
+Users                         : []
+Accounts                      : []
+NoAuthUser                    : 
+DefaultSentinel               : 
+SystemAccount                 : 
+NoSystemAccount               : false
+Username                      : 
+Password                      : 
+ProxyRequired                 : false
+ProxyProtocol                 : false
+Authorization                 : 
+AuthCallout                   : <nil>
+PingInterval                  : 0s
+MaxPingsOut                   : 0
+HTTPHost                      : 
+HTTPPort                      : 0
+HTTPBasePath                  : 
+HTTPSPort                     : 0
+AuthTimeout                   : 0
+MaxControlLine                : 0
+MaxPayload                    : 0
+MaxPending                    : 0
+NoFastProducerStall           : false
+Cluster                       : {  0   0 <nil> 0 <nil> false false map[]   false 0 false 0 [] { []} 0s 0 0s  <nil> <nil>}
+Gateway                       : {  0   0 <nil> 0 false false map[]  0 false [] false 0s  <nil> 0 <nil>}
+LeafNode                      : { 0   false   [] 0 <nil> 0 false map[] false 0s  false 0s 0s  { []} []  false 0s <nil> 0 <nil> <nil>}
+JetStream                     : false
+NoJetStreamStrict             : false
+JetStreamMaxMemory            : 0
+JetStreamMaxStore             : 0
+JetStreamDomain               : 
+JetStreamExtHint              : 
+JetStreamKey                  : 
+JetStreamOldKey               : 
+JetStreamCipher               : ChaCha20-Poly1305
+JetStreamUniqueTag            : 
+JetStreamLimits               : {0 0 0 0s 0 0 0 0s 0}
+JetStreamTpm                  : {   0}
+JetStreamMaxCatchup           : 0
+JetStreamRequestQueueLimit    : 0
+JetStreamInfoQueueLimit       : 0
+JetStreamMetaCompact          : 0
+JetStreamMetaCompactSize      : 0
+JetStreamMetaCompactSync      : false
+JetStreamConcurrentIOs        : 0
+StreamMaxBufferedMsgs         : 0
+StreamMaxBufferedSize         : 0
+StoreDir                      : 
+SyncInterval                  : 0s
+SyncAlways                    : false
+JsAccDefaultDomain            : map[]
+Websocket                     : { 0          0 false <nil> false map[] false [] false 0s 0s map[] <nil>}
+MQTT                          : { 0      0 0 false 0s 0 <nil> false 0 map[] 0s 0s 0 <nil> false false}
+ProfPort                      : 0
+ProfBlockRate                 : 0
+PidFile                       : 
+PortsFileDir                  : 
+LogFile                       : 
+LogSizeLimit                  : 0
+LogMaxFiles                   : 0
+Syslog                        : false
+RemoteSyslog                  : 
+Routes                        : []
+RoutesStr                     : 
+TLSTimeout                    : 0
+TLS                           : false
+TLSVerify                     : false
+TLSMap                        : false
+TLSCert                       : 
+TLSKey                        : 
+TLSCaCert                     : 
+TLSConfig                     : <nil>
+TLSPinnedCerts                : map[]
+TLSRateLimit                  : 0
+TLSHandshakeFirst             : false
+TLSHandshakeFirstFallback     : 0s
+AllowNonTLS                   : false
+WriteDeadline                 : 0s
+WriteTimeout                  : 
+MaxClosedClients              : 0
+LameDuckDuration              : 0s
+LameDuckGracePeriod           : 0s
+MaxTracedMsgLen               : 0
+TrustedKeys                   : []
+TrustedOperators              : []
+AccountResolver               : <nil>
+AccountResolverTLSConfig      : <nil>
+AlwaysEnableNonce             : false
+CustomClientAuthentication    : <nil>
+CustomRouterAuthentication    : <nil>
+CheckConfig                   : false
+DisableJetStreamBanner        : false
+ConnectErrorReports           : 0
+ReconnectErrorReports         : 0
+Tags                          : []
+Metadata                      : map[]
+FeatureFlags                  : map[]
+OCSPConfig                    : <nil>
+tlsConfigOpts                 : no field velu [119]
+Proxies                       : <nil>
+inConfig                      : no field velu [121]
+inCmdLine                     : no field velu [122]
+operatorJWT                   : no field velu [123]
+resolverPreloads              : no field velu [124]
+resolverPinnedAccounts        : no field velu [125]
+gatewaysSolicitDelay          : no field velu [126]
+overrideProto                 : no field velu [127]
+maxMemSet                     : no field velu [128]
+maxStoreSet                   : no field velu [129]
+syncSet                       : no field velu [130]
+OCSPCacheConfig               : <nil>
+authBlockDefined              : no field velu [132]
+configDigest                  : no field velu [133]
+******** End Nats Server Options ***********
+PASS
+ok  	server/nats/natsServ/natsYaml	0.006s
