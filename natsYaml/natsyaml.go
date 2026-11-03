@@ -3,7 +3,10 @@ package natsyaml
 import (
 	"fmt"
 	"os"
+	"reflect"
+//	"encoding/json/v2"
 
+	"github.com/nats-io/nats-server/v2/server"
 	"github.com/goccy/go-yaml"
 )
 
@@ -99,6 +102,19 @@ func RdYaml(filnam string) (config NatsConfig, err error) {
 	return config, nil
 }
 
+func RdYamlOpt(filnam string) (opt server.Options, err error) {
+
+	var config NatsConfig
+    yamlData, err := os.ReadFile(filnam)
+    if err != nil {return opt, fmt.Errorf("cannot read yaml file [%s]: %v", filnam, err)}
+
+    err = yaml.Unmarshal([]byte(yamlData), &config)
+    if err != nil {return opt, fmt.Errorf("cannot unmarshal yamldata: %v", err)}
+
+	opt.ServerName = config.Server.Server_name
+	return opt, nil
+}
+
 
 func PrintNatsConfig (config NatsConfig) {
 	fmt.Println("********** Nats Config *************")
@@ -170,4 +186,25 @@ func PrintNatsConfig (config NatsConfig) {
 
 	fmt.Println("******** End Nats Config ***********")
 
+}
+
+func PrintNatsServerOpt (opt server.Options)(err error) {
+	fmt.Println("********** Nats Server Options *************")
+	val := reflect.ValueOf(opt)
+
+	// 2. Loop through the number of fields
+	for i := 0; i < val.NumField(); i++ {
+    	field := val.Field(i)
+    	fieldName := val.Type().Field(i).Name
+    	// Safely verify if you are allowed to read the interface value
+    	if field.CanInterface() {
+        	fieldValue := field.Interface()
+			fmt.Printf("%-30s: %v\n", fieldName, fieldValue)
+    	} else {
+			fmt.Printf("%-30s: no field velu [%d]\n", fieldName, i)
+    	}
+	}
+	fmt.Println("******** End Nats Server Options ***********")
+
+	return nil
 }

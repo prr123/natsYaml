@@ -24,3 +24,17 @@ func TestRdYaml(t *testing.T) {
     PrintNatsConfig(cfg)
 }
 
+func TestRdYamlOpt(t *testing.T) {
+
+	yamlFilnam := "../yaml/natsConfig.yaml"
+
+	yamlData, err := os.ReadFile(yamlFilnam)
+	if err != nil {t.Errorf("could not read yaml config: %v", err)}
+	if len(yamlData) == 0 {t.Errorf("no yaml data in file!")}
+
+    opt, err := RdYamlOpt(yamlFilnam)
+    if err != nil {t.Errorf("could not decode yaml file to server.Options: %v", err)}
+
+	err = PrintNatsServerOpt(opt)
+    if err != nil {t.Errorf("could not print server.Options: %v", err)}
+}
