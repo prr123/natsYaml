@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 //	"encoding/json/v2"
+	"strconv"
 
 	"github.com/nats-io/nats-server/v2/server"
 	"github.com/goccy/go-yaml"
@@ -111,7 +112,60 @@ func RdYamlOpt(filnam string) (opt server.Options, err error) {
     err = yaml.Unmarshal([]byte(yamlData), &config)
     if err != nil {return opt, fmt.Errorf("cannot unmarshal yamldata: %v", err)}
 
-	opt.ServerName = config.Server.Server_name
+	// config file
+	// todo
+
+	// server
+	scfg := config.Server
+	if len(scfg.Server_name) > 0 {
+		opt.ServerName = scfg.Server_name
+	} else {
+		if len(scfg.Name) > 0 {
+			opt.ServerName = scfg.Name
+		} else {
+			opt.ServerName = "NatsServ"
+		}
+	}
+
+	// server port
+	port := scfg.Port
+	portNum, err := strconv.Atoi(port)
+	if err != nil {return opt, fmt.Errorf("yaml file: port number is not an integer")}
+	if portNum>65000 {return opt, fmt.Errorf("yaml file: port number is too high")}
+	if portNum<1000 {return opt, fmt.Errorf("yaml file: port number is too low (<1000)")}
+	opt.Port = portNum
+
+	// server address
+	if len(scfg.Addr) > 0 {
+		opt.Host = scfg.Addr
+	} else {
+		if len(scfg.Net) > 0 {
+			opt.Host = scfg.Net
+		} else {
+			opt.Host = "0.0.0.0"
+		}
+	}
+
+	// DontListen
+	opt.DontListen = false
+
+	// pid file
+	opt.PidFile = scfg.Pid
+
+	//
+
+	opt.HTTPPort, err = strconv.Atoi(scfg.Http_port)
+	if err != nil {return opt, fmt.Errorf("yaml file: http port number is not an integer")}
+
+	opt.HTTPSPort, err = strconv.Atoi(scfg.Https_port)
+	if err != nil {return opt, fmt.Errorf("yaml file: https port number is not an integer")}
+
+	opt.PortsFileDir = scfg.Ports_Dir
+
+	//client advertise (client url)
+	opt.ClientAdvertise = scfg.CL_Adv
+
+
 	return opt, nil
 }
 
