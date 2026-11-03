@@ -2,8 +2,9 @@ package natsyaml
 
 import (
 	"fmt"
+	"os"
 
-
+	"github.com/goccy/go-yaml"
 )
 
 type NatsConfig struct {
@@ -30,7 +31,7 @@ type Serv_struct struct {
   Signal string `yaml:"signal"`              // <signal>[=<pid>]    Send signal to nats-server process (ldm, stop, quit, term, reopen, reload)
                                              //    <pid> can be either a PID (e.g. 1) or the path to a PID file (e.g. /var/run/nats-server.pid)
   CL_Adv string `yaml:"client_advertise"`    // Client URL to advertise to other servers
-  Ports_FilDir string `yaml:"ports_file_dir"` // Creates a ports file in the specified directory (<executable_name>_<pid>.ports).
+  Ports_Dir string `yaml:"ports_file_dir"`   // Creates a ports file in the specified directory (<executable_name>_<pid>.ports).
 }
 
 type Log_struct struct {
@@ -62,8 +63,8 @@ type Auth_struct struct {
 type Tls_struct struct {
   Tls bool `yaml:"tls"`                      // Enable TLS, do not verify clients (default: false)
   TlsCert string `yaml:"tlscert"`            // Server certificate file
-  Tlskey string `yaml:"tlskey"`              // Private key for server certificate
-  Tlsverify string `yaml:"tlsverify"`        // Enable TLS, verify client certificates
+  TlsKey string `yaml:"tlskey"`              // Private key for server certificate
+  TlsVerify string `yaml:"tlsverify"`        // Enable TLS, verify client certificates
   TlsCaCert string `yaml:"tlscacert"`        // Client certificate CA for verification
 }
 
@@ -87,15 +88,84 @@ type Profil_struct struct {
 //        --help_tls                   TLS help
 
 
-func RdYaml(yamlFilnam string) (config NatsConfig, err error) {
+func RdYaml(filnam string) (config NatsConfig, err error) {
 
+    yamlData, err := os.ReadFile(filnam)
+    if err != nil {return config, fmt.Errorf("cannot read yaml file [%s]: %v", filnam, err)}
 
+    err = yaml.Unmarshal([]byte(yamlData), &config)
+    if err != nil {return config, fmt.Errorf("cannot unmarshal yamldata: %v", err)}
 
 	return config, nil
 }
 
+
 func PrintNatsConfig (config NatsConfig) {
 	fmt.Println("********** Nats Config *************")
+	scfg := config.Server
+	fmt.Println("  Server:")
+	fmt.Printf("        Addr:              %s\n", scfg.Addr) // server address
+	fmt.Printf("        Net:               %s\n", scfg.Net)
+	fmt.Printf("        Port:              %s\n", scfg.Port)
+	fmt.Printf("        Name:              %s\n", scfg.Name) // same as Server_name
+	fmt.Printf("        Server Name:       %s\n", scfg.Server_name)
+	fmt.Printf("        Pid:               %s\n", scfg.Pid) // File where PID is stored
+	fmt.Printf("        Http_port:         %s\n", scfg.Http_port)
+	fmt.Printf("        Https_port:        %s\n", scfg.Https_port)
+	fmt.Printf("        Config:            %s\n", scfg.Config)  // Configuration file
+	fmt.Printf("        Test:              %t\n", scfg.Test)
+	fmt.Printf("        Signal:            %s\n", scfg.Signal)  // <signal>[=<pid>]    Send signal to nats-server process (ldm, stop, quit, term, reopen, reload)
+	fmt.Printf("        Client_Adv:        %s\n", scfg.CL_Adv)
+	fmt.Printf("        Ports_Dir:         %s\n", scfg.Ports_Dir)    // Creates a ports file in the specified directory (<executable_name>_<pid>.ports).
+
+
+	lcfg := config.Logging
+	fmt.Println("\n  Logging:")
+	fmt.Printf("        Log File:          %s\n", lcfg.LogFil)    // File to redirect log output
+	fmt.Printf("        Log Time Stamp:    %t\n", lcfg.LogTime)   // Timestamp log entries (default: true)
+	fmt.Printf("        UTC Log Time:      %t\n", lcfg.LogTimUtc) // use UTC in time stamps
+	fmt.Printf("        Syslog:            %t\n", lcfg.Syslog)    // Log to syslog or windows event log
+	fmt.Printf("        Remote Adr:        %s\n", lcfg.RemSysLog) // Syslog server addr (udp://localhost:514)
+	fmt.Printf("        Debug:             %t\n", lcfg.Debug)
+	fmt.Printf("        Trace:             %s\n", lcfg.Trace)    //
+				                                              //    -VV  Verbose trace (traces system account as well)
+                                                              //    -DV  Debug and trace
+                                                              //    -DVV  Debug and verbose trace (traces system account as well)
+	fmt.Printf("        Max Log Size:      %s\n", lcfg.LogMaxSize)  // should be a number but default is 'auto'
+	fmt.Printf("        Max Trace Msg Len: %d\n", lcfg.TraceMaxMsg) // Maximum printable length for traced messages (default: unlimited)
+
+
+	jcfg := config.JetStream
+	fmt.Println("\n  JetStream:")
+	fmt.Printf("        JetStream:         %t\n", jcfg.JetStr)   // Enables JetStream functionality
+	fmt.Printf("        Store Dir:         %s\n", jcfg.StoreDir)
+
+	acfg := config.Authorisation
+	fmt.Println("\n  Authorisation:")
+	fmt.Printf("        User:              %s\n", acfg.User)
+	fmt.Printf("        Passwd:            %s\n", acfg.Pass)
+	fmt.Printf("        Token:             %s\n", acfg.Token)
+
+	tcfg := config.TLS
+	fmt.Println("\n  TLS:")
+	fmt.Printf("        TLS:               %t\n", tcfg.Tls)  // true, if tls in use
+	fmt.Printf("        TLS Cert:          %s\n", tcfg.TlsCert)
+	fmt.Printf("        TLS Key:           %s\n", tcfg.TlsKey)
+	fmt.Printf("        TLS Verify:        %s\n", tcfg.TlsVerify) // Enable TLS, verify client certificates
+	fmt.Printf("        TLS Ca Cert:       %s\n", tcfg.TlsCaCert) // Certificate Authority Cert
+
+	clcfg := config.Cluster
+	fmt.Println("\n  Cluster:")
+	fmt.Printf("        Routes:            %s\n", clcfg.Routes)
+	fmt.Printf("        Name:              %s\n", clcfg.ClusterName)
+	fmt.Printf("        NoAdvert:          %t\n", clcfg.NoAdvert)
+	fmt.Printf("        ClAdvert:          %s\n", clcfg.ClusterAdvert)
+	fmt.Printf("        ClRetries:         %d\n", clcfg.ClRetries)
+	fmt.Printf("        ClListen:          %s\n", clcfg.ClListen)
+
+	pcfg := config.Profiling
+	fmt.Println("\n  Profiling:")
+	fmt.Printf("        Profile:           %d\n", pcfg.Profile)
 
 
 	fmt.Println("******** End Nats Config ***********")
