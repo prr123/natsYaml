@@ -16,13 +16,19 @@ package main
 //go:generate go run server/errors_gen.go
 
 import (
-	"flag"
+//	"flag"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 
+	"server/nats/natsServ/natsYaml"
+	util "github.com/prr123/utility/utilLib"
 	"github.com/nats-io/nats-server/v2/server"
+
 )
 
+/*
 var usageStr = `
 Usage: nats-server [options]
 
@@ -94,14 +100,83 @@ func usage() {
 	fmt.Printf("%s\n", usageStr)
 	os.Exit(0)
 }
+*/
 
 func main() {
+
+    numarg := len(os.Args)
+    flags:=[]string{"dbg", "yaml", "test", "config"}
+
+    dbg := false
+    useStr := "/yaml=<yamlfile> [/test] [/dbg]"
+    helpStr := "azul cli template program"
+
+    if numarg > len(flags) +1 {
+        fmt.Println("too many arguments in cl!")
+        fmt.Println("usage: %s %s\n", os.Args[0], useStr)
+        os.Exit(-1)
+    }
+
+    if numarg == 1 || (numarg > 1 && os.Args[1] == "help") {
+        fmt.Printf("help: %s\n", helpStr)
+        fmt.Printf("usage is: %s %s\n", os.Args[0], useStr)
+        os.Exit(1)
+    }
+
+    flagMap, err := util.ParseFlags(os.Args, flags)
+    if err != nil {log.Fatalf("util.ParseFlags: %v\n", err)}
+
+    _, ok := flagMap["dbg"]
+    if ok {dbg = true}
+
+	ConfigTest := false
+    _, okf := flagMap["test"]
+    if okf {ConfigTest = true}
+
+
+    yFil := ""
+    yval, ok := flagMap["yaml"]
+    if !ok {
+        log.Fatalf("error -- no yaml flag provided!\n")
+    } else {
+        if yval.(string) == "none" {log.Fatalf("error -- no yaml file name provided!\n")}
+        yFil = yval.(string)
+        idx := strings.IndexByte(yFil, '.')
+        if idx > -1 {log.Fatalf("error -- yaml file <%s> has an extension!\n", yFil)}
+    }
+	yamlFilnam := "yaml/"+ yFil + ".yaml"
+
+
+    cfgFil := ""
+    cval, ok := flagMap["config"]
+    if ok {
+        if cval.(string) == "none" {log.Fatalf("error -- no config file name provided!\n")}
+        cfgFil = cval.(string)
+        idx := strings.IndexByte(yFil, '.')
+        if idx > -1 {log.Fatalf("error -- yaml file <%s> has an extension!\n", yFil)}
+    }
+	cfgFilnam := cfgFil + ".cfg"
+
+	exe := "nats-server"
+
+	if dbg {
+		log.Printf("dbg -- ConfigTest:  %t\n", ConfigTest)
+		log.Printf("dbg -- yaml file:   %s\n", yamlFilnam)
+		log.Printf("dbg -- config file: %s\n", cfgFilnam)
+	}
+
+	opts, err := natsyaml.RdYamlOpt(yamlFilnam)
+    if err != nil {log.Fatalf("could not decode yaml file to server.Options: %v", err)}
+
+    err = natsyaml.PrintNatsServerOpt(opts)
+    if err != nil {log.Fatalf("could not print server.Options: %v", err)}
+
+	os.Exit(0)
 
 // the following section needs to be replaced
 // read yaml file
 
 /*
-	exe := "nats-server"
 
 	// Create a FlagSet and sets the usage
 	fs := flag.NewFlagSet(exe, flag.ExitOnError)
@@ -124,7 +199,7 @@ func main() {
 */
 
 	// Create the server with appropriate options.
-	s, err := server.NewServer(opts)
+	s, err := server.NewServer(&opts)
 	if err != nil {
 		server.PrintAndDie(fmt.Sprintf("%s: %s", exe, err))
 	}
